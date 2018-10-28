@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>ToDo List</title>
+</head>
+
+
+<body>
+
+    <div id="app">
+        <h1 class="blue-text text-darken-3 center">ToDo LIST</h1>
+        <div class="card-panel blue lighten-5">
+            <div class="input-field">
+                <input class="center"v-model="newTodo" placeholder="What do you have ToDo?" v-on:keyup.enter="addTodo">
+            </div>
+        </div>
+        <div class="collection  center">
+        <todo-list v-for="(todo, index) in list" 
+        v-bind:todo="todo" 
+        v-bind:ind="index" 
+        v-on:action="removeTodo"></todo-list>
+        </div>
+        <p class="blue-text text-darken-3 center">These are things that you have ToDo!</p>
+
+    </div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+    Vue.component('todo-list', {
+        props: ['todo', 'ind'],
+        template: `
+        <div class="collection-item light-blue lighten-3 ">
+            <span class="blue-text text-darken-3">{{ todo.data }}</span>
+            <div v-on:click="$emit('action', ind)" class="secondary-content black-text">X</div>
+        </div>    
+        `
+
+    })
+    new Vue({
+        el: '#app',
+        data: {
+            newTodo: '',
+            list: [
+                { data: 'Press enter to add' }
+            ]
+        },
+        methods: {
+            addTodo: function () {
+
+                var text = this.newTodo.trim()
+                var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+                if (format.test(text)) {
+                    alert("Do not add special characters");
+                    this.newTodo = ''
+                }
+                if (text.length > 30) {
+                    alert("You can't have more than 30 characters.");
+                    this.newTodo = '';
+                    return;
+                }
+                if (text == '') {
+                    alert("Do not add empty ToDo's");
+                    this.newTodo = '';
+                    return;
+                }
+                else {
+                    this.list.push({ data: text })
+                    this.newTodo = ''
+                }
+            },
+            removeTodo: function (index) {
+                this.list.splice(index, 1)
+            }, 
+            },
+            
+    })
+
+</script>
+
+</html>
